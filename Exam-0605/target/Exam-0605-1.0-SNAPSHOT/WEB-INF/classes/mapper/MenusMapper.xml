@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.MenusMapper">
+    <insert id="addMenus" parameterType="menus">
+        insert into menus
+        (menu_name,menu_url,level,parent_id,create_time,update_time,is_delete)
+        values
+        (#{menuName},#{menuUrl},#{level},#{parentId}, #{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteMenus" parameterType="menus">
+        update menus set is_delete = 0 where menu_id=#{menuId}
+    </update>
+    <update id="updateMenus" parameterType="menus">
+        update menus
+        set
+            menu_name = #{menuName},menu_url = #{menuUrl},level = #{level},
+            parent_id = #{parentId},create_time = #{createTime},
+            update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+            menu_id=#{menuId}
+    </update>
+
+    <resultMap id="menusMap" type="menus">
+        <id column="menu_id" property="menuId"/>
+        <result column="menu_name" property="menuName"/>
+        <result column="menu_url" property="menuUrl"/>
+        <result column="level" property="level"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <collection property="menusList" column="menu_id" select="qf.com.mapper.MenusMapper.getMenusOne"/>
+    </resultMap>
+
+    <select id="getMenusList" parameterType="menus" resultMap="menusMap">
+        select * from menus where parent_id = 0
+    </select>
+    <select id="getMenusOne" parameterType="int" resultMap="menusMap">
+        select * from menus WHERE parent_id = #{parentId}
+    </select>
+</mapper>

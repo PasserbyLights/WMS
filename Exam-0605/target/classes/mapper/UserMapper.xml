@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.UserMapper">
+    <insert id="addUser" parameterType="user" useGeneratedKeys="true" keyProperty="userId">
+        insert into user
+        (user_name,user_tel,user_email,user_nick,
+        password,salt,create_time,update_time,is_delete)
+        values
+        (#{userName},#{userTel},#{userEmail},
+        #{userNick},#{password},#{salt},
+        #{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteUser" parameterType="user">
+        update user set is_delete=0 where user_id=#{userId}
+    </update>
+    <update id="updateUser" parameterType="user">
+        update user
+        set
+        user_name=#{userName},
+        user_tel=#{userTel},
+        user_email=#{userEmail},
+        user_nick=#{userNick},
+        password=#{password},
+        salt=#{salt},
+        create_time=#{createTime},
+        update_time=#{updateTime},
+        is_delete=#{isDelete},
+        avatar=#{avatar}
+        where
+        user_id=#{userId}
+    </update>
+
+    <!--查询单个-->
+    <resultMap id="userMap" type="user">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_tel" property="userTel"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="user_nick" property="userNick"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="avatar" property="avatar"/>
+        <collection property="userRole" ofType="List" resultMap="UserRoleMap"/>
+    </resultMap>
+    <resultMap id="UserRoleMap" type="UserRole">
+        <id column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <!-- 嵌套查询 Department 表，建立一一关系 -->
+        <association property="role" javaType="List" resultMap="roleMap"/>
+    </resultMap>
+    <resultMap id="roleMap" type="role">
+        <id column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+    <select id="getUserOne" parameterType="user" resultMap="userMap">
+        SELECT *
+        FROM user u
+        JOIN user_role r ON u.user_id = r.user_id
+        JOIN role r1 ON r.role_id = r1.role_id
+        WHERE
+        u.user_id = #{userId};
+    </select>
+
+    <resultMap id="userMap1" type="user">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_tel" property="userTel"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="user_nick" property="userNick"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="avatar" property="avatar"/>
+        <collection property="userDepartment" ofType="List" resultMap="userDepartmentMap"/>
+    </resultMap>
+    <resultMap id="userDepartmentMap" type="userDepartment">
+        <id column="user_id" property="userId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <!-- 嵌套查询 Department 表，建立一一关系 -->
+        <association property="department" javaType="List" resultMap="departmentMap"/>
+    </resultMap>
+    <resultMap id="departmentMap" type="department">
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+    <select id="getUserOne1" parameterType="user" resultMap="userMap1">
+        SELECT *
+        FROM user u
+        JOIN user_department d ON u.user_id = d.user_id
+        JOIN department d1 ON d.dept_id = d1.dept_id
+        WHERE
+        u.user_id = #{userId};
+    </select>
+
+    <!--查询列表-->
+    <select id="getUserList" parameterType="user" resultType="user">
+        select * from user
+        <where>
+            <if test="userName!=null and userName!=''">
+                AND user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userTel!=null and userTel!=''">
+                AND user_tel = #{userTel}
+            </if>
+            <if test="startTime!=null and endTime!=null">
+                AND create_time &gt;= #{startTime} AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY user_id DESC
+    </select>
+    <select id="getAdmin" resultType="user" parameterType="user">
+        select * from user where user_email=#{userEmail} and password=#{password}
+    </select>
+    <select id="getUserByEmail" resultType="user" parameterType="user">
+        select * from user where user_email=#{userEmail}
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.CarrierMapper">
+    <insert id="addCarrier" parameterType="carrier">
+        insert into carrier
+        (carrier_name,carrier_leader,carrier_tel,carrier_email,
+        carrier_address,create_time,update_time,is_delete)
+        values
+        (#{carrierName},#{carrierLeader},#{carrierTel},#{carrierEmail},
+        #{carrierAddress},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteCarrier" parameterType="carrier">
+        update carrier set is_delete = 0 where carrier_id=#{carrierId}
+    </update>
+    <update id="updateCarrier" parameterType="carrier">
+        update carrier
+        set
+        carrier_name = #{carrierName}, carrier_leader = #{carrierLeader},
+        carrier_tel = #{carrierTel}, carrier_email = #{carrierEmail},
+        carrier_address = #{carrierAddress}, create_time = #{createTime},
+        update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+        carrier_id=#{carrierId}
+    </update>
+    <select id="getCarrierOne" parameterType="carrier" resultType="carrier">
+        select * from carrier where  carrier_id=#{carrierId}
+    </select>
+    <select id="getCarrierList" parameterType="carrier" resultType="carrier">
+        select * from carrier ORDER BY carrier_id DESC
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.SupplierMapper">
+    <insert id="addSupplier" parameterType="supplier">
+        insert into supplier
+        (supplier_name,supplier_leader,supplier_tel,supplier_email,
+        supplier_address,create_time,update_time,is_delete)
+        values
+        (#{supplierName},#{supplierLeader},#{supplierTel},#{supplierEmail},
+        #{supplierAddress},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteSupplier" parameterType="supplier">
+        update supplier set is_delete = 0 where supplier_id=#{supplierId}
+    </update>
+    <update id="updateSupplier" parameterType="supplier">
+        update supplier
+        set
+        supplier_name = #{supplierName}, supplier_leader = #{supplierLeader},
+        supplier_tel = #{supplierTel}, supplier_email = #{supplierEmail},
+        supplier_address = #{supplierAddress}, create_time = #{createTime},
+        update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+        supplier_id=#{supplierId}
+    </update>
+    <select id="getSupplierOne" parameterType="supplier" resultType="supplier">
+        select * from supplier where supplier_id=#{supplierId}
+    </select>
+    <select id="getSupplierList" parameterType="supplier" resultType="supplier">
+        select * from supplier ORDER BY supplier_id DESC
+    </select>
+
+
+    <select id="getSupplierOne1" parameterType="supplier" resultType="supplier">
+        select * from supplier where supplier_name LIKE CONCAT('%',#{supplierName},'%')
+    </select>
+</mapper>

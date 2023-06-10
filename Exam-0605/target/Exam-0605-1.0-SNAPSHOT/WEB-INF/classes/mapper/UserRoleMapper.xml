@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.UserRoleMapper">
+    <insert id="addUserRole" parameterType="userRole">
+        insert into user_role
+            (user_id,role_id,create_time,update_time,is_delete)
+        values
+             (#{userId},#{roleId},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteUserRole" parameterType="userRole">
+        update user_role set is_delete=0 where user_id=#{userId}
+    </update>
+
+    <!--查询单个-->
+    <resultMap id="userRoleMap" type="userRole">
+        <id column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="role" javaType="role">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserRoleOne" parameterType="userRole" resultMap="userRoleMap">
+        select * from user_role u,role r where u.role_id = r.role_id and user_id=#{userId}
+    </select>
+    <!--查询列表-->
+    <resultMap id="userRoleMap1" type="userRole">
+        <id column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="role" javaType="role">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+            <result column="create_time" property="createTime"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="is_delete" property="isDelete"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserRoleList" parameterType="userRole" resultMap="userRoleMap1">
+        select * from user_role u,role r where u.role_id = r.role_id ORDER BY user_id DESC
+    </select>
+</mapper>

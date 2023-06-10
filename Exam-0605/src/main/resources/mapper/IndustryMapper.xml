@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.IndustryMapper">
+    <!--添加-->
+    <insert id="addIndustry" parameterType="industry">
+        insert into industry
+        (industry_name,create_time,update_time,is_delete)
+        values
+            (#{industryName},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <!--删除(将is_delete从1设置为0)-->
+    <update id="deleteIndustry" parameterType="industry">
+        update industry set is_delete=0 where industry_id=#{industryId}
+    </update>
+    <!--批量删除(将is_delete从1设置为0)-->
+    <update id="batchIndustry" parameterType="industry">
+        update industry set is_delete=0 where industry_id in
+        <foreach collection="list" item="industryId" open="(" close=")" separator=",">
+            #{industryId}
+        </foreach>
+    </update>
+    <!--更新-->
+    <update id="updateIndustry" parameterType="industry">
+        update industry
+        set
+            industry_name=#{industryName},
+            create_time=#{createTime},
+            update_time=#{updateTime},
+            is_delete=#{isDelete}
+        where
+             industry_id=#{industryId}
+    </update>
+    <!--查询单个-->
+    <select id="getIndustryOne" parameterType="industry" resultType="industry">
+        select * from industry where industry_id=#{industryId}
+    </select>
+    <!--查询列表-->
+    <select id="getIndustryList" parameterType="industry" resultType="industry">
+        select * from industry ORDER BY industry_id DESC
+    </select>
+</mapper>

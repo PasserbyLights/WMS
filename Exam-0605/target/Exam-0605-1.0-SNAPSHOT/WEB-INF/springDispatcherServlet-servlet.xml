@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--配置扫描包-->
+    <context:component-scan base-package="qf.com"/>
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--配置注解驱动-->
+    <mvc:annotation-driven/>
+    <!--配置静态资源-->
+    <mvc:default-servlet-handler/>
+    <!--配置aop注解-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!--文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--编码-->
+        <property name="defaultEncoding" value="utf-8"/>
+        <!--上传大小-->
+        <property name="maxUploadSize" value="-1"/>
+    </bean>
+
+<!--    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/login"/>
+            &lt;!&ndash;<mvc:exclude-mapping path="/ws"/>&ndash;&gt;
+            <bean class="qf.com.interceptor.UserInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+</beans>

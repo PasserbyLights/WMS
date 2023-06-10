@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.LevelMapper">
+    <insert id="addLevel" parameterType="level">
+        insert into level
+            (level_name,create_time,update_time,is_delete)
+        values
+            (#{levelName},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteLevel" parameterType="level">
+        update level set is_delete=0 where level_id=#{levelId}
+    </update>
+    <update id="updateLevel" parameterType="level">
+        update level
+        set
+            level_name=#{levelName},
+            create_time=#{createTime},
+            update_time=#{updateTime},
+            is_delete=#{isDelete}
+        where
+            level_id=#{levelId}
+    </update>
+    <!--查询单个-->
+    <select id="getLevelOne" parameterType="level" resultType="level">
+        select * from level where level_id=#{levelId}
+    </select>
+    <!--查询列表-->
+    <select id="getLevelList" parameterType="level" resultType="level">
+        select * from level ORDER BY level_id DESC
+    </select>
+</mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.CustomerMapper">
+    <insert id="addCustomer" parameterType="customer">
+        insert into customer
+        (customer_name,customer_leader,customer_tel,customer_email,
+        customer_address,level_id,source_id,
+        industry_id, create_time,update_time,is_delete)
+        values
+        (#{customerName},#{customerLeader},#{customerTel},
+        #{customerEmail}, #{levelId}, #{sourceId}, #{industryId},
+        #{customerAddress},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteCustomer" parameterType="customer">
+        update customer set is_delete = 0 where customer_id=#{customerId}
+    </update>
+    <update id="updateCustomer" parameterType="customer">
+        update customer
+        set
+        customer_name = #{customerName}, customer_leader = #{customerLeader},
+        customer_tel = #{customerTel}, customer_email = #{customerEmail},
+        customer_address = #{customerAddress},level_id = #{levelId},
+        source_id = #{sourceId},industry_id = #{industryId},
+        create_time = #{createTime},update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+        customer_id=#{customerId}
+    </update>
+
+    <resultMap id="customerMap" type="customer">
+        <id column="customer_id" property="customerId"/>
+        <result column="customer_name" property="customerName"/>
+        <result column="customer_leader" property="customerLeader"/>
+        <result column="customer_tel" property="customerTel"/>
+        <result column="customer_email" property="customerEmail"/>
+        <result column="customer_address" property="customerAddress"/>
+        <result column="level_id" property="levelId"/>
+        <result column="source_id" property="sourceId"/>
+        <result column="industry_id" property="industryId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="level" javaType="level">
+            <id column="level_id" property="levelId"/>
+            <result column="level_name" property="levelName"/>
+        </association>
+        <association property="industry" javaType="industry">
+            <id column="industry_id" property="industryId"/>
+            <result column="industry_name" property="industryName"/>
+        </association>
+        <association property="source" javaType="source">
+            <id column="source_id" property="sourceId"/>
+            <result column="source_name" property="sourceName"/>
+        </association>
+
+    </resultMap>
+    <select id="getCustomerList" parameterType="customer" resultMap="customerMap">
+        select * from customer c,level l,industry i,source s
+        where
+        c.level_id=l.level_id and
+        c.industry_id=i.industry_id and
+        c.source_id=s.source_id
+        <if test="customerName!=null and customerName!=''">and customer_name LIKE CONCAT('%',#{customerName},'%')</if>
+        <if test="customerTel!=null  and customerTel!=''">and customer_tel = #{customerTel}</if>
+        <if test="startTime!=null and endTime!=null">and c.create_time &gt;= #{startTime} and c.create_time &lt;=
+            #{endTime}
+        </if>
+        ORDER BY c.customer_id desc
+    </select>
+    <select id="getCustomerOne1" parameterType="customer" resultType="customer">
+        select * from customer where customer_name LIKE CONCAT('%',#{customerName},'%')
+    </select>
+    <select id="getCustomerOne" parameterType="customer" resultType="customer">
+        select * from customer where customer_id = #{customer_id}
+    </select>
+</mapper>

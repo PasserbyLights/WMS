@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.SourceMapper">
+    <insert id="addSource" parameterType="source">
+        insert into source
+        (source_name,create_time,update_time,is_delete)
+        values
+        (#{sourceName},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteSource" parameterType="source">
+        update source set is_delete=0 where source_id=#{sourceId}
+    </update>
+    <update id="updateSource" parameterType="source">
+        update source
+        set
+        source_name=#{sourceName},
+        create_time=#{createTime},
+        update_time=#{updateTime},
+        is_delete=#{isDelete}
+        where
+        source_id=#{sourceId}
+    </update>
+    <!--查询单个-->
+    <select id="getSourceOne" parameterType="source" resultType="source">
+        select * from source where source_id=#{sourceId}
+    </select>
+    <!--查询列表-->
+    <select id="getSourceList" parameterType="source" resultType="source">
+        select * from source ORDER BY source_id DESC
+    </select>
+</mapper>

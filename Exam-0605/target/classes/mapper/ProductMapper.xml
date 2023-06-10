@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.ProductMapper">
+    <insert id="addProduct" parameterType="product">
+        insert into product
+            (product_name,category_id,product_size,product_price,create_time,update_time,is_delete)
+        values
+             (#{productName},#{categoryId},#{productSize},#{productPrice},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteProduct" parameterType="product">
+        update product set is_delete=0 where product_id=#{productId}
+    </update>
+    <update id="updateProduct" parameterType="product">
+        update product
+        set
+            product_name=#{productName},
+            category_id=#{categoryId},
+            product_size=#{productSize},
+            product_price=#{productPrice},
+            create_time=#{createTime},
+            update_time=#{updateTime},
+            is_delete=#{isDelete}
+        where
+             product_id=#{productId}
+    </update>
+
+    <!--查询单个-->
+    <resultMap id="productMap" type="product">
+        <id column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="product_size" property="productSize"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="category" javaType="category">
+            <id column="category_id" property="categoryId"/>
+            <result column="category_name" property="categoryName"/>
+        </association>
+    </resultMap>
+    <select id="getProductOne" parameterType="product" resultMap="productMap">
+        select * from product p,category c where p.category_id=c.category_id and product_id=#{productId}
+    </select>
+
+    <!--查询列表-->
+    <resultMap id="productMap1" type="product">
+        <id column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="product_size" property="productSize"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="category" javaType="category">
+            <id column="category_id" property="categoryId"/>
+            <result column="category_name" property="categoryName"/>
+        </association>
+    </resultMap>
+
+    <select id="getProductList" parameterType="product" resultMap="productMap1">
+        select * from product p,category c where p.category_id=c.category_id ORDER BY product_id DESC
+    </select>
+    <select id="getProductOne1" parameterType="product" resultType="product">
+        select * from product where product_name LIKE CONCAT('%',#{productName},'%')
+    </select>
+</mapper>

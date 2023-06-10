@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.RoleMapper">
+    <insert id="addRole" parameterType="role">
+        insert into role
+         (role_name,create_time,update_time,is_delete)
+        values
+         (#{roleName},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteRole" parameterType="role">
+        update role set is_delete=0 where role_id=#{roleId}
+    </update>
+    <update id="updateRole" parameterType="role">
+        update role
+        set
+        role_name=#{roleName},
+        create_time=#{createTime},
+        update_time=#{updateTime},
+        is_delete=#{isDelete}
+        where
+        role_id=#{roleId}
+    </update>
+    <!--查询单个-->
+    <select id="getRoleOne" parameterType="role" resultType="role">
+        select * from role where role_id=#{roleId}
+    </select>
+    <!--查询列表-->
+    <select id="getRoleList" parameterType="role" resultType="role">
+        select * from role ORDER BY role_id DESC
+    </select>
+</mapper>

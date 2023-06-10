@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.RecordStockMapper">
+    <insert id="addRecordStock" parameterType="recordStock">
+        insert into record_stock
+        (product_id,repo_id,product_stock,create_time,update_time,is_delete)
+        values
+        (#{productId},#{repoId},#{productStock},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+
+    <update id="updateRecordStock" parameterType="recordStock">
+        update record_stock
+        set
+        product_stock = #{productStock}, create_time = #{createTime},
+        update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+        product_id=#{productId} and repo_id = #{repoId}
+    </update>
+
+    <resultMap id="recordStockMap" type="recordStock">
+        <id column="product_id" property="productId"/>
+        <result column="repo_id" property="repoId"/>
+        <result column="product_stock" property="productStock"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <collection property="repository" ofType="List" resultMap="repositoryMap"/>
+        <collection property="product" ofType="List" resultMap="productMap"/>
+    </resultMap>
+    <resultMap id="repositoryMap" type="repository">
+        <id column="repo_id" property="repoId"/>
+        <result column="repo_name" property="repoName"/>
+        <result column="repo_address" property="repoAddress"/>
+        <result column="repo_area" property="repoArea"/>
+        <result column="repo_desc" property="repoDesc"/>
+        <result column="repo_status" property="repoStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+    <resultMap id="productMap" type="product">
+        <id column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="product_size" property="productSize"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+    <select id="getRecordStockList" parameterType="recordStock" resultMap="recordStockMap">
+        SELECT * from record_stock rs
+        join repository r on rs.repo_id = r.repo_id
+        join product p on rs.product_id = p.product_id
+        <where>
+            <if test="productId!=null">
+                AND rs.product_id = #{productId}
+            </if>
+            <if test="repoId!=null">
+                AND rs.repo_id = #{repoId}
+            </if>
+        </where>
+        ORDER BY rs.repo_id
+    </select>
+
+    <select id="getRecordStockOne" parameterType="recordStock" resultType="recordStock">
+        select * from record_stock where product_id=#{productId}
+    </select>
+
+    <select id="getRecordStockOne1" parameterType="recordStock" resultType="recordStock">
+        select * from record_stock where product_id=#{productId} and repo_id=#{repoId}
+    </select>
+    <select id="getListStockRecord" parameterType="recordStock" resultType="recordStock">
+        select * from record_stock where product_id=#{productId} and repo_id=#{repoId}
+    </select>
+</mapper>

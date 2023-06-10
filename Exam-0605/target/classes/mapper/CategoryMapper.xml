@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.CategoryMapper">
+    <insert id="addCategory" parameterType="category">
+        insert into category
+            (category_name,level,parent_id,create_time,update_time,is_delete)
+        values
+            (#{categoryName},#{level},#{parentId}, #{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteCategory" parameterType="category">
+        update category set is_delete = 0 where category_id=#{categoryId}
+    </update>
+    <update id="updateCategory" parameterType="category">
+        update category
+        set
+            category_name = #{categoryName},level = #{level},
+            parent_id = #{parentId},create_time = #{createTime},
+            update_time = #{updateTime}, is_delete = #{isDelete}
+        where
+             category_id=#{categoryId}
+    </update>
+
+    <resultMap id="categoryMap" type="category">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="level" property="level"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <collection property="categories" column="category_id" select="qf.com.mapper.CategoryMapper.getCategoryOne"/>
+    </resultMap>
+
+    <select id="getCategoryList" parameterType="category" resultMap="categoryMap">
+        select * from category where parent_id=0
+    </select>
+    <select id="getCategoryOne" parameterType="int" resultMap="categoryMap">
+        select * from category WHERE parent_id=#{parentId}
+    </select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qf.com.mapper.UserDepartmentMapper">
+    <insert id="addUserDepartment" parameterType="userDepartment">
+        insert into user_department
+             (user_id,dept_id,create_time,update_time,is_delete)
+        values
+             (#{userId},#{deptId},#{createTime},#{updateTime},#{isDelete})
+    </insert>
+    <update id="deleteUserDepartment" parameterType="userDepartment">
+        update user_department set is_delete=0 where user_id=#{userId}
+    </update>
+
+    <!--查询单个-->
+    <resultMap id="userRoleMap" type="userDepartment">
+        <id column="user_id" property="userId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="department" javaType="department">
+            <id column="dept_id" property="deptId"/>
+            <result column="dept_name" property="deptName"/>
+            <result column="create_time" property="createTime"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="is_delete" property="isDelete"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserDepartmentOne" parameterType="userDepartment" resultMap="userRoleMap">
+        select * from user_department where user_id=#{userId}
+    </select>
+    <!--查询列表-->
+    <resultMap id="userRoleMap1" type="userDepartment">
+        <id column="user_id" property="userId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_delete" property="isDelete"/>
+
+        <association property="userDepartment" javaType="userDepartment">
+            <id column="dept_id" property="deptId"/>
+            <result column="dept_name" property="deptName"/>
+            <result column="create_time" property="createTime"/>
+            <result column="update_time" property="updateTime"/>
+            <result column="is_delete" property="isDelete"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserDepartmentList" parameterType="userDepartment" resultMap="userRoleMap1">
+        select * from user_department u,department d where u.dept_id = d.dept_id ORDER BY user_id DESC
+    </select>
+</mapper>
